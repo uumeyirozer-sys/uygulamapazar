@@ -1,0 +1,109 @@
+   ▲ Next.js 15.5.18
+   - Local:        http://127.0.0.1:3008
+   - Network:      http://127.0.0.1:3008
+
+ ✓ Starting...
+ ✓ Ready in 1487ms
+ ○ Compiling /urun/[slug] ...
+ ✓ Compiled /urun/[slug] in 2.5s (612 modules)
+ GET /urun/taskflow-pro-saas 200 in 3304ms
+ GET /profil/kodustasi 200 in 3394ms
+ ✓ Compiled / in 448ms (628 modules)
+ GET /urun/taskflow-pro-saas 200 in 1010ms
+ GET / 200 in 1149ms
+ GET /profil/kodustasi 200 in 1159ms
+ GET /ilan-ver 200 in 1195ms
+ GET /profil/kodustasi 200 in 224ms
+ ○ Compiling /kategoriler ...
+ ✓ Compiled /kategoriler in 1143ms (632 modules)
+ GET /kategoriler 200 in 1324ms
+ GET /kategoriler 200 in 81ms
+ ✓ Compiled /kategori/[slug] in 343ms (620 modules)
+ GET /kategori/oyunlar 200 in 837ms
+ ✓ Compiled /urun/[slug] in 215ms (390 modules)
+ GET /urun/pixel-runner-mobile 200 in 352ms
+ GET /profil/gameforge 200 in 55ms
+ ✓ Compiled in 2s (632 modules)
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 1276ms (623 modules)
+ GET /profil/gameforge 404 in 1685ms
+ GET /profil/gameforge 200 in 871ms
+ ○ Compiling /_error ...
+ GET /profil/gameforge 500 in 3465ms
+ GET /profil/gameforge 200 in 1135ms
+ ✓ Compiled /_error in 1627ms (981 modules)
+ GET /profil/gameforge 200 in 1312ms
+ ✓ Compiled in 749ms (402 modules)
+ GET /profil/gameforge 500 in 1050ms
+ GET /profil/gameforge 404 in 234ms
+ GET /profil/gameforge 404 in 234ms
+ GET /profil/gameforge 404 in 234ms
+ GET /profil/gameforge 404 in 236ms
+ GET /profil/gameforge 404 in 255ms
+ GET /profil/gameforge 404 in 235ms
+ GET /profil/gameforge 404 in 236ms
+ GET /profil/gameforge 404 in 238ms
+ GET /profil/gameforge 404 in 234ms
+ GET /profil/gameforge 404 in 230ms
+ GET /profil/gameforge 404 in 235ms
+ GET /profil/gameforge 404 in 238ms
+ GET /profil/gameforge 404 in 234ms
+ GET /profil/gameforge 404 in 232ms
+ GET /profil/gameforge 404 in 234ms
+ GET /profil/gameforge 404 in 239ms
+ GET /profil/gameforge 404 in 236ms
+ GET /profil/gameforge 404 in 238ms
+ GET /profil/gameforge 404 in 237ms
+ GET /profil/gameforge 404 in 233ms
+ GET /profil/gameforge 404 in 234ms
+ GET /profil/gameforge 404 in 236ms
+ GET /profil/gameforge 404 in 239ms
+ ✓ Compiled in 2.1s (981 modules)
+ GET /profil/gameforge 200 in 1130ms
+ GET /profil/gameforge 200 in 477ms
+ ○ Compiling / ...
+ ✓ Compiled / in 536ms (485 modules)
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 535ms (978 modules)
+ GET / 500 in 3098ms
+ GET / 500 in 528ms
+ GET /profil/gameforge 200 in 1284ms
+ ✓ Compiled /mesajlar in 294ms (967 modules)
+ GET /mesajlar 200 in 415ms
+ ✓ Compiled /urun/[slug] in 345ms (585 modules)
+ GET /urun/taskflow-pro-saas 200 in 509ms
+ GET /urun/taskflow-pro-saas 200 in 79ms
+ GET /urun/taskflow-pro-saas 200 in 73ms
+ GET / 200 in 97ms
+ GET / 200 in 353ms
+ GET / 200 in 264ms
+ ✓ Compiled in 875ms (397 modules)
+ ✓ Compiled in 273ms (397 modules)
+ GET / 200 in 243ms
+ ✓ Compiled in 537ms (397 modules)
+ ✓ Compiled in 512ms (397 modules)
+ ✓ Compiled in 2.5s (885 modules)
+ ✓ Compiled in 1520ms (885 modules)
+ ✓ Compiled in 1223ms (885 modules)
+ ✓ Compiled /_error in 279ms (967 modules)
+ GET / 500 in 519ms
+ GET / 500 in 61ms
+ ✓ Compiled in 2.3s (397 modules)
+ ✓ Compiled in 1470ms (397 modules)
+ ✓ Compiled in 1327ms (885 modules)
+ ✓ Compiled in 1136ms (885 modules)
+ ✓ Compiled in 858ms (885 modules)
+ ✓ Compiled in 1466ms (885 modules)
+ ✓ Compiled in 1428ms (885 modules)
+ ✓ Compiled in 1308ms (885 modules)
+ ✓ Compiled in 1366ms (885 modules)
+ ✓ Compiled in 832ms (397 modules)
+ ✓ Compiled in 390ms (397 modules)
+ ✓ Compiled in 385ms (397 modules)
+ ✓ Compiled in 353ms (397 modules)
+ ✓ Compiled in 1785ms (885 modules)
+ ✓ Compiled in 1126ms (885 modules)
+ ✓ Compiled in 1446ms (885 modules)
+ ✓ Compiled in 1131ms (885 modules)
+ ✓ Compiled in 1247ms (885 modules)
+ ✓ Compiled in 869ms (885 modules)

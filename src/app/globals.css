@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary-red: #e50914;
+  --color-primary-red-hover: #c80711;
+  --color-black: #09090b;
+  --color-white: #ffffff;
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f4f4f5;
+  --color-neutral-200: #e4e4e7;
+  --color-neutral-300: #d4d4d8;
+  --color-neutral-400: #a1a1aa;
+  --color-neutral-500: #71717a;
+  --color-neutral-600: #52525b;
+  --color-neutral-700: #3f3f46;
+  --color-neutral-800: #27272a;
+  --color-neutral-900: #18181b;
+  --color-neutral-950: #09090b;
+  --radius-card: 1rem;
+  --shadow-card: 0 1px 2px rgba(9, 9, 11, 0.05), 0 16px 44px rgba(9, 9, 11, 0.07);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  scroll-behavior: smooth;
+  text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+  background: var(--color-white);
+  color: var(--color-black);
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+::selection {
+  background: var(--color-primary-red);
+  color: var(--color-white);
+}
+
+@layer base {
+  h1,
+  .page-title {
+    @apply text-page-title tracking-normal text-brand-black md:text-[2.5rem] md:leading-[3rem];
+  }
+
+  h2,
+  .section-title {
+    @apply text-section-title tracking-normal text-brand-black;
+  }
+
+  h3,
+  .card-title {
+    @apply text-card-title tracking-normal text-brand-black;
+  }
+
+  p,
+  .body-text {
+    @apply text-body-text text-neutral-700;
+  }
+
+  .meta-text {
+    @apply text-meta-text text-neutral-500;
+  }
+
+  .tag-text {
+    @apply text-tag-text uppercase tracking-normal text-neutral-700;
+  }
+}
+
+@layer components {
+  .app-container {
+    @apply container;
+  }
+
+  .app-section {
+    @apply py-section-sm md:py-section;
+  }
+
+  .btn {
+    @apply inline-flex min-h-11 items-center justify-center rounded-lg px-5 py-2.5 text-sm font-bold tracking-normal transition duration-200 ease-premium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply inline-flex min-h-11 items-center justify-center rounded-lg bg-brand-red px-5 py-2.5 text-sm font-bold tracking-normal text-brand-white shadow-sm transition duration-200 ease-premium hover:-translate-y-px hover:bg-brand-red-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-red disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn-secondary {
+    @apply inline-flex min-h-11 items-center justify-center rounded-lg bg-brand-black px-5 py-2.5 text-sm font-bold tracking-normal text-brand-white shadow-sm transition duration-200 ease-premium hover:bg-neutral-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-black disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn-outline {
+    @apply inline-flex min-h-11 items-center justify-center rounded-lg border border-neutral-300 bg-brand-white px-5 py-2.5 text-sm font-bold tracking-normal text-brand-black transition duration-200 ease-premium hover:border-neutral-500 hover:bg-neutral-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-black disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .market-card {
+    @apply rounded-xl border border-neutral-200/90 bg-brand-white shadow-card transition duration-200 ease-premium hover:-translate-y-1 hover:border-neutral-300 hover:shadow-card-hover;
+  }
+}

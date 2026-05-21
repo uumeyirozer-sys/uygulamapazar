@@ -1,0 +1,137 @@
+   ▲ Next.js 15.5.18
+   - Local:        http://127.0.0.1:3006
+   - Network:      http://127.0.0.1:3006
+
+ ✓ Starting...
+ ✓ Ready in 1467ms
+ ○ Compiling /urun/[slug] ...
+ ✓ Compiled /urun/[slug] in 976ms (602 modules)
+ GET /urun/taskflow-pro-saas 200 in 1913ms
+ GET /kategori/uygulamalar 200 in 2385ms
+ ✓ Compiled /kategoriler in 476ms (605 modules)
+ GET /urun/taskflow-pro-saas 200 in 896ms
+ GET /kategoriler 200 in 1043ms
+ GET /kategori/uygulamalar 200 in 1044ms
+ GET /kategoriler 200 in 221ms
+ ✓ Compiled / in 322ms (607 modules)
+ GET / 200 in 479ms
+ GET /kategoriler 200 in 62ms
+ GET /kategori/wordpress 200 in 74ms
+ GET /urun/pixel-runner-mobile 200 in 77ms
+ GET / 200 in 94ms
+ GET / 200 in 83ms
+ GET /kategoriler 200 in 57ms
+ GET /kategori/oyunlar 200 in 68ms
+ GET / 200 in 83ms
+ GET / 200 in 79ms
+ GET / 200 in 76ms
+ GET /urun/pixel-runner-mobile 200 in 76ms
+ GET / 200 in 92ms
+ GET /kategoriler 200 in 52ms
+ GET /kategori/wordpress 200 in 56ms
+ GET /urun/pixel-runner-mobile 200 in 64ms
+ GET /urun/taskflow-pro-saas 200 in 311ms
+ ✓ Compiled in 2.7s (237 modules)
+ ○ Compiling /_error ...
+ GET / 200 in 2072ms
+ ✓ Compiled /_error in 1693ms (954 modules)
+ GET / 500 in 2161ms
+ GET / 200 in 195ms
+ GET /kategoriler 200 in 78ms
+ GET / 200 in 93ms
+ ✓ Compiled in 466ms (390 modules)
+ GET / 200 in 144ms
+ ✓ Compiled in 1775ms (968 modules)
+ GET / 200 in 1378ms
+ GET / 200 in 148ms
+ ✓ Compiled in 1035ms (968 modules)
+ GET / 200 in 194ms
+ GET / 200 in 73ms
+ GET / 200 in 83ms
+ ✓ Compiled /_not-found in 493ms (959 modules)
+ GET /kategoriler 404 in 599ms
+ GET /kategoriler 200 in 328ms
+ GET /kategori/oyunlar 500 in 1172ms
+ GET /kategori/oyunlar 500 in 77ms
+ GET /kategori/oyunlar 500 in 177ms
+ GET /kategori/oyunlar 500 in 76ms
+ GET /kategoriler 500 in 852ms
+ GET /kategoriler 500 in 100ms
+ GET / 500 in 82ms
+ GET /kategoriler 500 in 3489ms
+ ○ Compiling /ilan-ver ...
+ ✓ Compiled /ilan-ver in 606ms (975 modules)
+ GET /ilan-ver 200 in 940ms
+ GET /ilan-ver 200 in 143ms
+ GET / 500 in 72ms
+ GET / 500 in 105ms
+ GET / 500 in 64ms
+ GET / 500 in 100ms
+ GET / 500 in 80ms
+ ✓ Compiled in 929ms (397 modules)
+ ✓ Compiled in 484ms (397 modules)
+ GET / 200 in 140ms
+ GET / 200 in 261ms
+ ✓ Compiled in 2.2s (975 modules)
+ GET / 200 in 2640ms
+ GET / 200 in 1057ms
+ ✓ Compiled in 1089ms (975 modules)
+ GET / 200 in 292ms
+ ✓ Compiled in 1432ms (975 modules)
+ GET / 200 in 283ms
+ GET /kategoriler 200 in 79ms
+ GET /kategori/uygulamalar 200 in 96ms
+ GET /urun/taskflow-pro-saas 200 in 83ms
+ ○ Compiling /profil/[username] ...
+ ✓ Compiled /profil/[username] in 544ms (971 modules)
+ GET /profil/studioalp 500 in 1330ms
+ GET /profil/studioalp 500 in 69ms
+ GET /profil/studioalp 500 in 553ms
+ GET /profil/studioalp 500 in 105ms
+ GET /profil/studioalp 500 in 363ms
+ GET /profil/studioalp 500 in 105ms
+ GET /urun/taskflow-pro-saas 500 in 172ms
+ GET /urun/taskflow-pro-saas 500 in 60ms
+ ○ Compiling /ilan-ver ...
+ ✓ Compiled /ilan-ver in 517ms (594 modules)
+ GET /ilan-ver 500 in 4695ms
+ GET /ilan-ver 500 in 3ms
+ GET /ilan-ver 500 in 3524ms
+ GET /ilan-ver 500 in 291ms
+ GET / 500 in 3523ms
+ GET / 500 in 291ms
+ GET /profil/kodustasi 500 in 3570ms
+ GET /profil/kodustasi 500 in 170ms
+ GET /urun/taskflow-pro-saas 500 in 3570ms
+ GET /urun/taskflow-pro-saas 500 in 170ms
+ ✓ Compiled in 3.4s (977 modules)
+ ✓ Compiled in 607ms (399 modules)
+ ✓ Compiled in 547ms (399 modules)
+ ✓ Compiled in 1089ms (977 modules)
+ ✓ Compiled in 2.3s (977 modules)
+ ✓ Compiled in 927ms (399 modules)
+ ✓ Compiled in 255ms (399 modules)
+ ✓ Compiled in 508ms (399 modules)
+ ✓ Compiled in 533ms (399 modules)
+ ✓ Compiled in 4s (977 modules)
+ ✓ Compiled in 1560ms (977 modules)
+ ✓ Compiled in 1226ms (977 modules)
+ ✓ Compiled in 2.4s (399 modules)
+ ✓ Compiled in 1172ms (399 modules)
+ ✓ Compiled in 1383ms (977 modules)
+ ✓ Compiled in 1126ms (977 modules)
+ ✓ Compiled in 1025ms (977 modules)
+ ✓ Compiled in 1490ms (977 modules)
+ ✓ Compiled in 1418ms (977 modules)
+ ✓ Compiled in 1310ms (977 modules)
+ ✓ Compiled in 1379ms (977 modules)
+ ✓ Compiled in 832ms (399 modules)
+ ✓ Compiled in 342ms (399 modules)
+ ✓ Compiled in 309ms (399 modules)
+ ✓ Compiled in 421ms (399 modules)
+ ✓ Compiled in 1704ms (977 modules)
+ ✓ Compiled in 1146ms (977 modules)
+ ✓ Compiled in 1338ms (977 modules)
+ ✓ Compiled in 1393ms (977 modules)
+ ✓ Compiled in 1313ms (977 modules)
+ ✓ Compiled in 886ms (977 modules)

@@ -1,0 +1,143 @@
+ ⨯ ./src/components/profile/message-modal-button.tsx
+Error: 
+
+Caused by:
+    0: Failed to read source code from C:\Users\masey\Desktop\Uygulamapazar.com\src\components\profile\message-modal-button.tsx
+    1: Sistem belirtilen dosyayı bulamıyor. (os error 2)
+
+Import trace for requested module:
+./src/components/profile/message-modal-button.tsx
+./src/app/profil/[username]/page.tsx
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⨯ ./src/components/profile/message-modal-button.tsx
+Error: 
+
+Caused by:
+    0: Failed to read source code from C:\Users\masey\Desktop\Uygulamapazar.com\src\components\profile\message-modal-button.tsx
+    1: Sistem belirtilen dosyayı bulamıyor. (os error 2)
+
+Import trace for requested module:
+./src/components/profile/message-modal-button.tsx
+./src/app/profil/[username]/page.tsx
+ ⨯ ./src/components/profile/message-modal-button.tsx
+Error: 
+
+Caused by:
+    0: Failed to read source code from C:\Users\masey\Desktop\Uygulamapazar.com\src\components\profile\message-modal-button.tsx
+    1: Sistem belirtilen dosyayı bulamıyor. (os error 2)
+
+Import trace for requested module:
+./src/components/profile/message-modal-button.tsx
+./src/app/profil/[username]/page.tsx
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⨯ [Error [InvariantError]: Invariant: Expected clientReferenceManifest to be defined. This is a bug in Next.js.]
+ ⨯ [Error [InvariantError]: Invariant: Expected clientReferenceManifest to be defined. This is a bug in Next.js.] {
+  page: '/profil/gameforge'
+}
+ ⨯ Failed to generate static paths for /profil/[username]:
+[Error [PageNotFoundError]: Cannot find module for page: /profil/[username]/page] {
+  type: 'PageNotFoundError',
+  code: 'ENOENT'
+}
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: EPERM: operation not permitted, rename 'C:\Users\masey\Desktop\Uygulamapazar.com\.next\cache\webpack\server-development\6.pack.gz_' -> 'C:\Users\masey\Desktop\Uygulamapazar.com\.next\cache\webpack\server-development\6.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\masey\Desktop\Uygulamapazar.com\.next\cache\webpack\client-development\2.pack.gz_' -> 'C:\Users\masey\Desktop\Uygulamapazar.com\.next\cache\webpack\client-development\2.pack.gz'
+ ⨯ [Error [InvariantError]: Invariant: Expected clientReferenceManifest to be defined. This is a bug in Next.js.]
+ ⨯ [Error [InvariantError]: Invariant: Expected clientReferenceManifest to be defined. This is a bug in Next.js.] {
+  page: '/'
+}
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⨯ [Error: Cannot find module 'C:\Users\masey\Desktop\Uygulamapazar.com\.next\server\pages\_document.js'
+Require stack:
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\server\require.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\server\load-components.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\build\utils.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\build\swc\options.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\build\swc\index.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\server\config.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\server\next.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\server\lib\start-server.js] {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+[TypeError: Cannot read properties of undefined (reading '/_app')]
+ ⨯ [TypeError: Cannot read properties of undefined (reading '/_app')]
+[Error [InvariantError]: Invariant: Expected clientReferenceManifest to be defined. This is a bug in Next.js.] {
+  page: '/'
+}
+ ⨯ [Error: Cannot find module 'C:\Users\masey\Desktop\Uygulamapazar.com\.next\server\pages\_document.js'
+Require stack:
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\server\require.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\server\load-components.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\build\utils.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\build\swc\options.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\build\swc\index.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\server\config.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\server\next.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\server\lib\start-server.js] {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+[TypeError: Cannot read properties of undefined (reading '/_app')]
+ ⨯ [TypeError: Cannot read properties of undefined (reading '/_app')]
+[TypeError: Cannot read properties of undefined (reading '/_app')]
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\masey\Desktop\Uygulamapazar.com\.next\cache\webpack\client-development\2.pack.gz_' -> 'C:\Users\masey\Desktop\Uygulamapazar.com\.next\cache\webpack\client-development\2.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\masey\Desktop\Uygulamapazar.com\.next\cache\webpack\server-development\3.pack.gz_' -> 'C:\Users\masey\Desktop\Uygulamapazar.com\.next\cache\webpack\server-development\3.pack.gz'
+ ⨯ SyntaxError: Unexpected non-whitespace character after JSON at position 4 (line 1 column 5)
+    at JSON.parse (<anonymous>) {
+  page: '/'
+}
+ ⨯ [Error: Cannot find module 'C:\Users\masey\Desktop\Uygulamapazar.com\.next\server\pages\_document.js'
+Require stack:
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\server\require.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\server\load-components.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\build\utils.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\build\swc\options.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\build\swc\index.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\server\config.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\server\next.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\server\lib\start-server.js] {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+[TypeError: Cannot read properties of undefined (reading '/_app')]
+ ⨯ [TypeError: Cannot read properties of undefined (reading '/_app')]
+SyntaxError: Unexpected non-whitespace character after JSON at position 4 (line 1 column 5)
+    at JSON.parse (<anonymous>) {
+  page: '/'
+}
+ ⨯ [Error: Cannot find module 'C:\Users\masey\Desktop\Uygulamapazar.com\.next\server\pages\_document.js'
+Require stack:
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\server\require.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\server\load-components.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\build\utils.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\build\swc\options.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\build\swc\index.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\server\config.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\server\next.js
+- C:\Users\masey\Desktop\Uygulamapazar.com\node_modules\next\dist\server\lib\start-server.js] {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+[TypeError: Cannot read properties of undefined (reading '/_app')]
+ ⨯ [TypeError: Cannot read properties of undefined (reading '/_app')]
+[TypeError: Cannot read properties of undefined (reading '/_app')]
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\masey\Desktop\Uygulamapazar.com\.next\cache\webpack\client-development\0.pack.gz_' -> 'C:\Users\masey\Desktop\Uygulamapazar.com\.next\cache\webpack\client-development\0.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\masey\Desktop\Uygulamapazar.com\.next\cache\webpack\server-development\0.pack.gz_' -> 'C:\Users\masey\Desktop\Uygulamapazar.com\.next\cache\webpack\server-development\0.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\masey\Desktop\Uygulamapazar.com\.next\cache\webpack\server-development\0.pack.gz_' -> 'C:\Users\masey\Desktop\Uygulamapazar.com\.next\cache\webpack\server-development\0.pack.gz'
+ ⨯ ./src/components/layout/footer.tsx
+Error: 
+
+Caused by:
+    0: Failed to read source code from C:\Users\masey\Desktop\Uygulamapazar.com\src\components\layout\footer.tsx
+    1: Sistem belirtilen dosyayı bulamıyor. (os error 2)
+
+Import trace for requested module:
+./src/components/layout/footer.tsx
+./src/app/layout.tsx
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\masey\Desktop\Uygulamapazar.com\.next\cache\webpack\server-development\0.pack.gz_' -> 'C:\Users\masey\Desktop\Uygulamapazar.com\.next\cache\webpack\server-development\0.pack.gz'
