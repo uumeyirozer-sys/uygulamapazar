@@ -14,6 +14,37 @@ type Errors = Partial<Record<"username" | "displayName" | "email" | "password" |
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const usernamePattern = /^[a-z0-9-]+$/;
 
+function getAuthRedirectTo() {
+  if (typeof window !== "undefined" && window.location.origin) {
+    return `${window.location.origin}/giris`;
+  }
+
+  if (process.env.NODE_ENV === "development") {
+    return "http://localhost:3000/giris";
+  }
+
+  return undefined;
+}
+
+function logAuthError(action: "signIn" | "signUp" | "unexpected", error: unknown) {
+  const errorDetails =
+    error && typeof error === "object"
+      ? {
+          code: "code" in error ? (error as { code?: unknown }).code : undefined,
+          message: "message" in error ? (error as { message?: unknown }).message : undefined,
+          status: "status" in error ? (error as { status?: unknown }).status : undefined
+        }
+      : undefined;
+
+  console.error("Supabase auth hatası.", error, {
+    action,
+    hasSupabaseUrl: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL),
+    hasSupabaseAnonKey: Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
+    currentOrigin: typeof window !== "undefined" ? window.location.origin : "server",
+    authError: errorDetails
+  });
+}
+
 export function AuthForm({ mode }: { mode: AuthMode }) {
   const router = useRouter();
   const [username, setUsername] = useState("");
@@ -94,7 +125,8 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
         });
 
         if (error) {
-          setSubmitError(getFriendlyAuthError(error.message));
+          logAuthError("signIn", error);
+          setSubmitError(getFriendlyAuthError(error));
           return;
         }
 
@@ -124,12 +156,14 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
           data: {
             username: cleanUsername,
             display_name: cleanDisplayName
-          }
+          },
+          emailRedirectTo: getAuthRedirectTo()
         }
       });
 
       if (error) {
-        setSubmitError(getFriendlyAuthError(error.message));
+        logAuthError("signUp", error);
+        setSubmitError(getFriendlyAuthError(error));
         return;
       }
 
@@ -141,8 +175,9 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
       setPassword("");
       setConfirmPassword("");
       setSuccessMessage("Kayıt başarılı. Lütfen e-posta adresinize gelen doğrulama bağlantısına tıklayın. Doğrulama sonrası giriş yapabilirsiniz.");
-    } catch {
-      setSubmitError("Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.");
+    } catch (error) {
+      logAuthError("unexpected", error);
+      setSubmitError(getFriendlyAuthError(error));
     } finally {
       setIsSubmitting(false);
     }

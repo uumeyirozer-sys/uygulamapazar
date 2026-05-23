@@ -10,19 +10,73 @@ export type AuthUserProfile = {
   displayName: string;
 };
 
-export function getFriendlyAuthError(message: string) {
+type AuthErrorLike = {
+  code?: string;
+  message?: string;
+  status?: number;
+};
+
+function getAuthErrorDetails(error: unknown): AuthErrorLike {
+  if (typeof error === "string") {
+    return { message: error };
+  }
+
+  if (error && typeof error === "object") {
+    const candidate = error as AuthErrorLike;
+    return {
+      code: typeof candidate.code === "string" ? candidate.code : undefined,
+      message: typeof candidate.message === "string" ? candidate.message : undefined,
+      status: typeof candidate.status === "number" ? candidate.status : undefined
+    };
+  }
+
+  return {};
+}
+
+export function getFriendlyAuthError(error: unknown) {
+  const { code, message = "", status } = getAuthErrorDetails(error);
+  const normalizedCode = code?.toLowerCase() ?? "";
   const normalizedMessage = message.toLowerCase();
 
-  if (normalizedMessage.includes("invalid login credentials")) {
+  if (
+    normalizedMessage.includes("supabase ortam değişkenleri eksik") ||
+    normalizedMessage.includes("failed to fetch") ||
+    normalizedMessage.includes("networkerror") ||
+    normalizedMessage.includes("network") ||
+    normalizedMessage.includes("fetch")
+  ) {
+    return "Supabase bağlantısı kurulamadı.";
+  }
+
+  if (
+    status === 401 ||
+    normalizedCode.includes("invalid_api_key") ||
+    normalizedMessage.includes("invalid api key") ||
+    normalizedMessage.includes("invalid jwt") ||
+    normalizedMessage.includes("jwt")
+  ) {
+    return "Geçersiz Supabase anahtarı.";
+  }
+
+  if (normalizedCode.includes("invalid_credentials") || normalizedMessage.includes("invalid login credentials")) {
     return "E-posta veya şifre hatalı.";
   }
 
-  if (normalizedMessage.includes("email not confirmed") || normalizedMessage.includes("not confirmed")) {
-    return "E-posta adresiniz henüz doğrulanmamış. Lütfen e-postanıza gelen doğrulama bağlantısına tıklayın.";
+  if (
+    normalizedCode.includes("email_not_confirmed") ||
+    normalizedMessage.includes("email not confirmed") ||
+    normalizedMessage.includes("not confirmed")
+  ) {
+    return "E-posta doğrulaması gerekiyor.";
   }
 
-  if (normalizedMessage.includes("user already registered") || normalizedMessage.includes("already registered")) {
-    return "Bu e-posta adresiyle zaten bir hesap oluşturulmuş.";
+  if (
+    normalizedCode.includes("user_already_exists") ||
+    normalizedMessage.includes("user already registered") ||
+    normalizedMessage.includes("already registered") ||
+    normalizedMessage.includes("already exists")
+  ) {
+    return "Bu e-posta zaten kayıtlı.";
   }
 
   if (normalizedMessage.includes("password")) {
@@ -31,10 +85,6 @@ export function getFriendlyAuthError(message: string) {
 
   if (normalizedMessage.includes("email")) {
     return "E-posta adresini kontrol edip tekrar deneyin.";
-  }
-
-  if (normalizedMessage.includes("network") || normalizedMessage.includes("fetch")) {
-    return "Bağlantı kurulamadı. Lütfen internet bağlantınızı kontrol edin.";
   }
 
   return "İşlem tamamlanamadı. Lütfen tekrar deneyin.";

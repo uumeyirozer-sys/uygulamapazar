@@ -194,6 +194,15 @@ type AppSupabaseClient = SupabaseClient<Database, "public", "public">;
 
 let browserClient: AppSupabaseClient | undefined;
 
+function logMissingSupabaseEnv(missingEnv: string[]) {
+  console.error("Supabase yapılandırması eksik.", {
+    hasSupabaseUrl: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL),
+    hasSupabaseAnonKey: Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
+    missingEnv,
+    currentOrigin: typeof window !== "undefined" ? window.location.origin : "server"
+  });
+}
+
 function getSupabaseEnv() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -209,6 +218,8 @@ function getSupabaseEnv() {
   }
 
   if (!supabaseUrl || !supabaseAnonKey) {
+    logMissingSupabaseEnv(missingEnv);
+
     throw new Error(
       `Supabase ortam değişkenleri eksik: ${missingEnv.join(
         ", "
@@ -242,5 +253,3 @@ export function getSupabaseClient(): AppSupabaseClient {
   browserClient ??= createSupabaseClient();
   return browserClient;
 }
-
-export const supabase = getSupabaseClient();
