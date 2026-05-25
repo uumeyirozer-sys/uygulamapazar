@@ -45,12 +45,18 @@ async function getListingCountsByUserIds(userIds: string[]) {
 
   try {
     const supabase = getSupabaseClient();
-    const { data } = await supabase.from("listings").select("user_id").eq("status", "approved").in("user_id", userIds);
+    const { data, error } = await supabase.from("listings").select("user_id").eq("status", "approved").in("user_id", userIds);
+
+    if (error) {
+      console.error("Ana sayfa profil ilan sayilari okunamadi:", error);
+      return productsByUserId;
+    }
 
     (data ?? []).forEach((listing) => {
       productsByUserId.set(listing.user_id, (productsByUserId.get(listing.user_id) ?? 0) + 1);
     });
-  } catch {
+  } catch (error) {
+    console.error("Ana sayfa profil ilan sayilari sorgusu calismadi:", error);
     return productsByUserId;
   }
 
@@ -80,13 +86,26 @@ export async function getHomepageProfileCards() {
       .order("sort_order", { ascending: true })
       .limit(4);
 
-    if (error || !slots || slots.length === 0) {
+    if (error) {
+      console.error("Ana sayfa populer profil slotlari okunamadi:", error);
+      return fallbackProfileCards();
+    }
+
+    if (!slots || slots.length === 0) {
       return fallbackProfileCards();
     }
 
     const typedSlots = slots as HomepageProfile[];
     const profileIds = typedSlots.map((slot) => slot.profile_id);
     const profileMap = await getProfilesByUserIds(profileIds);
+
+    if (profileMap.size === 0) {
+      console.error(
+        "Ana sayfa populer profil kayitlari var ama profiles detaylari okunamadi. Public profiles SELECT policy kontrol edilmeli.",
+        { profileIds }
+      );
+    }
+
     const counts = await getListingCountsByUserIds(profileIds);
     const cards = typedSlots
       .map((slot) => {
@@ -95,8 +114,14 @@ export async function getHomepageProfileCards() {
       })
       .filter((card): card is HomepageProfileCard => Boolean(card));
 
-    return cards.length > 0 ? cards : fallbackProfileCards();
-  } catch {
+    if (cards.length === 0) {
+      console.error("Ana sayfa populer profil karti uretilemedi; fallback kullaniliyor.", { slots: typedSlots });
+      return fallbackProfileCards();
+    }
+
+    return cards;
+  } catch (error) {
+    console.error("Ana sayfa populer profil akisi calismadi:", error);
     return fallbackProfileCards();
   }
 }
@@ -111,7 +136,12 @@ export async function getHomepageSponsoredProduct() {
       .eq("is_active", true)
       .maybeSingle();
 
-    if (error || !slot?.listing_id) {
+    if (error) {
+      console.error("Ana sayfa sponsorlu urun slotu okunamadi:", error);
+      return products[0];
+    }
+
+    if (!slot?.listing_id) {
       return products[0];
     }
 
@@ -122,7 +152,15 @@ export async function getHomepageSponsoredProduct() {
       .eq("status", "approved")
       .maybeSingle();
 
-    if (listingError || !listing) {
+    if (listingError) {
+      console.error("Ana sayfa sponsorlu urun ilani okunamadi:", listingError);
+      return products[0];
+    }
+
+    if (!listing) {
+      console.error("Ana sayfa sponsorlu urun slotu bir ilana bagli ama ilan bulunamadi veya approved degil.", {
+        listingId: slot.listing_id
+      });
       return products[0];
     }
 
@@ -131,7 +169,8 @@ export async function getHomepageSponsoredProduct() {
       ...mapListingToProduct(listing, profileMap.get(listing.user_id)),
       sponsored: true
     };
-  } catch {
+  } catch (error) {
+    console.error("Ana sayfa sponsorlu urun akisi calismadi:", error);
     const approvedProducts = await getApprovedListingProducts({ fallback: true, limit: 1 });
     return approvedProducts[0] ?? products[0];
   }

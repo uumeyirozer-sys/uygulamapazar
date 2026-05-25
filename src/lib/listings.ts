@@ -89,6 +89,10 @@ export async function getProfilesByUserIds(userIds: string[]) {
   const { data, error } = await supabase.from("profiles").select("*").in("id", userIds);
 
   if (error || !data) {
+    if (error) {
+      console.error("Profil bilgileri okunamadi:", error);
+    }
+
     return new Map<string, Profile>();
   }
 
@@ -110,12 +114,17 @@ export async function getApprovedListingProducts(options?: { fallback?: boolean;
     const { data, error } = await query;
 
     if (error || !data || data.length === 0) {
+      if (error) {
+        console.error("Approved listings okunamadi:", error);
+      }
+
       return shouldFallback ? products : [];
     }
 
     const profileMap = await getProfilesByUserIds(Array.from(new Set(data.map((listing) => listing.user_id))));
     return data.map((listing) => mapListingToProduct(listing, profileMap.get(listing.user_id)));
-  } catch {
+  } catch (error) {
+    console.error("Approved listings sorgusu calismadi:", error);
     return shouldFallback ? products : [];
   }
 }
@@ -131,12 +140,17 @@ export async function getApprovedListingProductBySlug(slug: string) {
       .maybeSingle();
 
     if (error || !data) {
+      if (error) {
+        console.error("Approved listing detayi okunamadi:", error);
+      }
+
       return products.find((product) => product.slug === slug);
     }
 
     const profileMap = await getProfilesByUserIds([data.user_id]);
     return mapListingToProduct(data, profileMap.get(data.user_id));
-  } catch {
+  } catch (error) {
+    console.error("Approved listing detayi sorgusu calismadi:", error);
     return products.find((product) => product.slug === slug);
   }
 }

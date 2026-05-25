@@ -352,23 +352,45 @@ export function AdminDashboard() {
     const existingSlot = homepageProfiles.find((slot) => slot.profile_id === profile.id);
 
     if (existingSlot) {
-      const { error } = await supabase.from("homepage_profiles").update({ is_active: !existingSlot.is_active }).eq("id", existingSlot.id);
+      const nextIsActive = !existingSlot.is_active;
+      const { data: updatedSlot, error } = await supabase
+        .from("homepage_profiles")
+        .update({ is_active: nextIsActive })
+        .eq("id", existingSlot.id)
+        .select("*")
+        .maybeSingle();
 
       if (error) {
         console.error("Popüler profil güncellenemedi:", error);
         setManagementMessage(`Popüler profil güncellenemedi: ${error.message}`);
         return;
       }
+
+      if (!updatedSlot || updatedSlot.is_active !== nextIsActive) {
+        console.error("Popüler profil güncellemesi DB doğrulamasından geçmedi.", { updatedSlot, expectedIsActive: nextIsActive });
+        setManagementMessage("Popüler profil güncellendi gibi göründü ama DB doğrulaması başarısız oldu.");
+        return;
+      }
     } else {
-      const { error } = await supabase.from("homepage_profiles").insert({
-        profile_id: profile.id,
-        sort_order: homepageProfiles.length,
-        is_active: true
-      });
+      const { data: insertedSlot, error } = await supabase
+        .from("homepage_profiles")
+        .insert({
+          profile_id: profile.id,
+          sort_order: homepageProfiles.length,
+          is_active: true
+        })
+        .select("*")
+        .maybeSingle();
 
       if (error) {
         console.error("Popüler profile eklenemedi:", error);
         setManagementMessage(`Popüler profile eklenemedi: ${error.message}`);
+        return;
+      }
+
+      if (!insertedSlot || insertedSlot.profile_id !== profile.id || insertedSlot.is_active !== true) {
+        console.error("Popüler profil insert DB doğrulamasından geçmedi.", { insertedSlot, profileId: profile.id });
+        setManagementMessage("Popüler profile eklendi gibi göründü ama DB doğrulaması başarısız oldu.");
         return;
       }
     }
@@ -392,11 +414,26 @@ export function AdminDashboard() {
       updated_at: new Date().toISOString()
     };
 
-    const { error } = await supabase.from("featured_slots").upsert(payload, { onConflict: "slot_key" });
+    const { data: upsertedSlot, error } = await supabase
+      .from("featured_slots")
+      .upsert(payload, { onConflict: "slot_key" })
+      .select("*")
+      .maybeSingle();
 
     if (error) {
       console.error("Sponsorlu ürün güncellenemedi:", error);
       setManagementMessage(`Sponsorlu ürün güncellenemedi: ${error.message}`);
+      return;
+    }
+
+    if (
+      !upsertedSlot ||
+      upsertedSlot.slot_key !== "homepage_sponsored_product" ||
+      upsertedSlot.listing_id !== payload.listing_id ||
+      upsertedSlot.is_active !== payload.is_active
+    ) {
+      console.error("Sponsorlu ürün upsert DB doğrulamasından geçmedi.", { upsertedSlot, payload });
+      setManagementMessage("Sponsorlu ürün güncellendi gibi göründü ama DB doğrulaması başarısız oldu.");
       return;
     }
 
