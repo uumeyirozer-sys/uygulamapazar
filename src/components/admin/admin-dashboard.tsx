@@ -14,8 +14,17 @@ type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 type HomepageProfile = Database["public"]["Tables"]["homepage_profiles"]["Row"];
 type FeaturedSlot = Database["public"]["Tables"]["featured_slots"]["Row"];
 type ListingStatus = Listing["status"];
+type SectionKey = "summary" | "listings" | "users" | "homepageProfiles" | "sponsoredProduct" | "ads" | "reports";
 
-const sections = ["Genel Özet", "İlan Yönetimi", "Kullanıcılar", "Popüler Profiller", "Sponsorlu Ürün", "Reklam Alanları", "Raporlar"];
+const sections: Array<{ key: SectionKey; label: string }> = [
+  { key: "summary", label: "Genel Özet" },
+  { key: "listings", label: "İlan Yönetimi" },
+  { key: "users", label: "Kullanıcılar" },
+  { key: "homepageProfiles", label: "Popüler Profiller" },
+  { key: "sponsoredProduct", label: "Sponsorlu Ürün" },
+  { key: "ads", label: "Reklam Alanları" },
+  { key: "reports", label: "Raporlar" }
+];
 const statusTabs: Array<{ label: string; value: "all" | ListingStatus }> = [
   { label: "Tümü", value: "all" },
   { label: "Onay bekleyen", value: "pending" },
@@ -159,6 +168,9 @@ export function AdminDashboard() {
   const [featuredSlot, setFeaturedSlot] = useState<FeaturedSlot | null>(null);
   const [selectedListingId, setSelectedListingId] = useState<string | null>(null);
   const [listingFilter, setListingFilter] = useState<"all" | ListingStatus>("all");
+  const [activeSection, setActiveSection] = useState<SectionKey>("summary");
+  const [isHomepageProfilesTableMissing, setIsHomepageProfilesTableMissing] = useState(false);
+  const [isFeaturedSlotsTableMissing, setIsFeaturedSlotsTableMissing] = useState(false);
 
   const profilesByUserId = useMemo(() => new Map(profiles.map((profile) => [profile.id, profile])), [profiles]);
   const listingCountsByUserId = useMemo(() => {
@@ -173,6 +185,7 @@ export function AdminDashboard() {
   const selectedListing = useMemo(() => listings.find((listing) => listing.id === selectedListingId) ?? null, [listings, selectedListingId]);
   const homepageProfileIds = useMemo(() => new Set(homepageProfiles.filter((slot) => slot.is_active !== false).map((slot) => slot.profile_id)), [homepageProfiles]);
   const sponsoredListing = useMemo(() => listings.find((listing) => listing.id === featuredSlot?.listing_id) ?? null, [featuredSlot, listings]);
+  const sectionClass = (sectionKey: SectionKey) => (activeSection === sectionKey ? "grid gap-6" : "hidden");
 
   const stats = [
     { label: "Toplam ilan", value: String(listings.length) },
@@ -186,6 +199,8 @@ export function AdminDashboard() {
     setIsLoading(true);
     setAuthError("");
     setManagementMessage("");
+    setIsHomepageProfilesTableMissing(false);
+    setIsFeaturedSlotsTableMissing(false);
 
     const supabase = getSupabaseClient();
     const {
@@ -243,12 +258,14 @@ export function AdminDashboard() {
 
     if (homepageProfilesResult.error) {
       console.error("Homepage profile yönetimi yüklenemedi:", homepageProfilesResult.error);
-      setManagementMessage(`Popüler Profil tablosu erişilemedi: ${homepageProfilesResult.error.message}`);
+      setIsHomepageProfilesTableMissing(true);
+      setManagementMessage("Gerekli tablo bulunamadı. Supabase SQL migration çalıştırılmalı.");
     }
 
     if (featuredSlotResult.error) {
       console.error("Sponsorlu ürün slotu yüklenemedi:", featuredSlotResult.error);
-      setManagementMessage((current) => `${current ? `${current} ` : ""}Sponsorlu Ürün tablosu erişilemedi: ${featuredSlotResult.error.message}`);
+      setIsFeaturedSlotsTableMissing(true);
+      setManagementMessage("Gerekli tablo bulunamadı. Supabase SQL migration çalıştırılmalı.");
     }
 
     setListings(listingsResult.data ?? []);
@@ -326,6 +343,11 @@ export function AdminDashboard() {
 
   async function handleToggleHomepageProfile(profile: Profile) {
     setManagementMessage("");
+    if (isHomepageProfilesTableMissing) {
+      setManagementMessage("Gerekli tablo bulunamadı. Supabase SQL migration çalıştırılmalı.");
+      return;
+    }
+
     const supabase = getSupabaseClient();
     const existingSlot = homepageProfiles.find((slot) => slot.profile_id === profile.id);
 
@@ -357,6 +379,11 @@ export function AdminDashboard() {
 
   async function handleSetSponsoredProduct(listingId: string) {
     setManagementMessage("");
+    if (isFeaturedSlotsTableMissing) {
+      setManagementMessage("Gerekli tablo bulunamadı. Supabase SQL migration çalıştırılmalı.");
+      return;
+    }
+
     const supabase = getSupabaseClient();
     const payload = {
       slot_key: "homepage_sponsored_product",
@@ -409,16 +436,40 @@ export function AdminDashboard() {
       <div className="grid gap-6 lg:grid-cols-[260px_1fr] lg:items-start">
         <aside className="market-card sticky top-24 overflow-hidden p-3">
           <nav className="grid gap-1">
-            {sections.map((section, index) => (
-              <a key={section} href={`#${section.toLowerCase().replaceAll(" ", "-")}`} className={`rounded-xl px-4 py-3 text-sm font-black transition ${index === 0 ? "bg-neutral-950 text-brand-white" : "text-neutral-600 hover:bg-neutral-100 hover:text-brand-black"}`}>
-                {section}
-              </a>
+            {sections.map((section) => (
+              <button
+                key={section.key}
+                type="button"
+                onClick={() => setActiveSection(section.key)}
+                className={`rounded-xl px-4 py-3 text-left text-sm font-black transition ${
+                  activeSection === section.key ? "bg-neutral-950 text-brand-white" : "text-neutral-600 hover:bg-neutral-100 hover:text-brand-black"
+                }`}
+              >
+                {section.label}
+              </button>
             ))}
           </nav>
         </aside>
 
         <main className="grid min-w-0 gap-6">
-          <section id="genel-özet">
+          <div className="market-card p-3">
+            <div className="flex flex-wrap gap-2">
+              {sections.map((section) => (
+                <button
+                  key={section.key}
+                  type="button"
+                  onClick={() => setActiveSection(section.key)}
+                  className={`rounded-full px-4 py-2 text-sm font-black transition ${
+                    activeSection === section.key ? "bg-brand-red text-brand-white" : "bg-neutral-100 text-neutral-700 hover:bg-red-50 hover:text-brand-red"
+                  }`}
+                >
+                  {section.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <section id="genel-ozet" className={sectionClass("summary")}>
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
               {stats.map((stat) => (
                 <article key={stat.label} className="market-card p-5">
@@ -429,7 +480,8 @@ export function AdminDashboard() {
             </div>
           </section>
 
-          <section id="ilan-yönetimi" className="market-card overflow-hidden">
+          <section id="ilan-yonetimi" className={sectionClass("listings")}>
+          <div className="market-card overflow-hidden">
             <div className="border-b border-neutral-100 p-5">
               <p className="tag-text text-brand-red">Moderasyon</p>
               <h2 className="mt-2 text-2xl font-black text-brand-black">İlan Yönetimi</h2>
@@ -473,11 +525,13 @@ export function AdminDashboard() {
                 </tbody>
               </table>
             </div>
+          </div>
           </section>
 
           {selectedListing ? <ListingDetailPanel listing={selectedListing} profile={profilesByUserId.get(selectedListing.user_id)} onClose={() => setSelectedListingId(null)} /> : null}
 
-          <section id="kullanıcılar" className="market-card overflow-hidden">
+          <section id="kullanicilar" className={sectionClass("users")}>
+          <div className="market-card overflow-hidden">
             <div className="border-b border-neutral-100 p-5">
               <p className="tag-text text-brand-red">Üyeler</p>
               <h2 className="mt-2 text-2xl font-black text-brand-black">Kullanıcılar</h2>
@@ -505,14 +559,22 @@ export function AdminDashboard() {
                 </tbody>
               </table>
             </div>
+          </div>
           </section>
 
-          <section id="popüler-profiller" className="market-card p-5">
+          <section id="populer-profiller" className={sectionClass("homepageProfiles")}>
+          <div className="market-card p-5">
             <p className="tag-text text-brand-red">Ana sayfa vitrini</p>
             <h2 className="mt-2 text-2xl font-black text-brand-black">Popüler Profiller</h2>
+            {isHomepageProfilesTableMissing ? (
+              <div className="mt-5 rounded-xl bg-red-50 p-4 text-sm font-bold text-brand-red ring-1 ring-red-100">
+                Gerekli tablo bulunamadı. Supabase SQL migration çalıştırılmalı.
+              </div>
+            ) : null}
             <div className="mt-5 grid gap-3 md:grid-cols-2">
               {profiles.map((profile) => {
                 const isSelected = homepageProfileIds.has(profile.id);
+                const existingSlot = homepageProfiles.find((slot) => slot.profile_id === profile.id);
 
                 return (
                   <div key={profile.id} className="flex items-center justify-between gap-4 rounded-xl bg-neutral-50 p-4 ring-1 ring-neutral-100">
@@ -521,21 +583,31 @@ export function AdminDashboard() {
                       <div className="min-w-0">
                         <p className="truncate text-sm font-black text-brand-black">{profile.display_name}</p>
                         <p className="truncate text-xs font-bold text-neutral-500">@{profile.username}</p>
+                        <p className={`mt-1 text-xs font-black ${isSelected ? "text-brand-red" : "text-neutral-500"}`}>
+                          {isSelected ? "Aktif popüler profil" : existingSlot ? "Pasif" : "Ekli değil"}
+                        </p>
                       </div>
                     </div>
-                    <button type="button" onClick={() => void handleToggleHomepageProfile(profile)} className={isSelected ? "btn-secondary shrink-0" : "btn-outline shrink-0"}>
+                    <button type="button" onClick={() => void handleToggleHomepageProfile(profile)} disabled={isHomepageProfilesTableMissing} className={isSelected ? "btn-secondary shrink-0" : "btn-outline shrink-0"}>
                       {isSelected ? "Popüler profilden çıkar" : "Popüler profile ekle"}
                     </button>
                   </div>
                 );
               })}
             </div>
+          </div>
           </section>
 
-          <section id="sponsorlu-ürün" className="market-card p-5">
+          <section id="sponsorlu-urun" className={sectionClass("sponsoredProduct")}>
+          <div className="market-card p-5">
             <p className="tag-text text-brand-red">Ana sayfa vitrini</p>
             <h2 className="mt-2 text-2xl font-black text-brand-black">Sponsorlu Ürün</h2>
             <p className="mt-3 text-sm font-bold text-neutral-600">Seçili ürün: {sponsoredListing?.title ?? "Yok, ana sayfa fallback sponsor kartını kullanır."}</p>
+            {isFeaturedSlotsTableMissing ? (
+              <div className="mt-5 rounded-xl bg-red-50 p-4 text-sm font-bold text-brand-red ring-1 ring-red-100">
+                Gerekli tablo bulunamadı. Supabase SQL migration çalıştırılmalı.
+              </div>
+            ) : null}
             <div className="mt-5 grid gap-3">
               <select value={featuredSlot?.listing_id ?? ""} onChange={(event) => void handleSetSponsoredProduct(event.target.value)} className="min-h-12 rounded-lg border border-neutral-300 bg-brand-white px-4 text-sm font-bold text-brand-black">
                 <option value="">Sponsorlu ürün seçilmedi</option>
@@ -543,19 +615,40 @@ export function AdminDashboard() {
                   <option key={listing.id} value={listing.id}>{listing.title}</option>
                 ))}
               </select>
-              {sponsoredListing ? (
-                <div className="grid gap-4 rounded-xl bg-neutral-50 p-4 ring-1 ring-neutral-100 md:grid-cols-[220px_1fr]">
-                  <div className="overflow-hidden rounded-lg"><ProductVisual accent="from-red-600 via-neutral-950 to-neutral-800" title={sponsoredListing.title} thumbnailUrl={sponsoredListing.thumbnail_url} compact /></div>
-                  <div>
-                    <p className="text-lg font-black text-brand-black">{sponsoredListing.title}</p>
-                    <p className="mt-2 text-sm leading-6 text-neutral-600">{sponsoredListing.short_description}</p>
-                  </div>
-                </div>
-              ) : null}
+              <div className="grid gap-4 lg:grid-cols-2">
+                {approvedListings.map((listing) => {
+                  const isSelected = featuredSlot?.listing_id === listing.id && featuredSlot.is_active !== false;
+
+                  return (
+                    <article key={listing.id} className={`overflow-hidden rounded-xl bg-neutral-50 ring-1 ${isSelected ? "ring-brand-red" : "ring-neutral-100"}`}>
+                      <ProductVisual accent="from-red-600 via-neutral-950 to-neutral-800" title={listing.title} thumbnailUrl={listing.thumbnail_url} compact variant="cover" />
+                      <div className="p-4">
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p className="text-xs font-black uppercase text-brand-red">{listing.category_slug ?? "kategori yok"}</p>
+                            <h3 className="mt-1 text-lg font-black text-brand-black">{listing.title}</h3>
+                          </div>
+                          <span className="rounded-full bg-neutral-950 px-3 py-1.5 text-xs font-black text-brand-white">{formatPrice(listing)}</span>
+                        </div>
+                        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                          <span className={`rounded-full px-3 py-1 text-xs font-black ${isSelected ? "bg-red-50 text-brand-red ring-1 ring-red-100" : "bg-neutral-200 text-neutral-600"}`}>
+                            {isSelected ? "Seçili sponsorlu ürün" : "Seçili değil"}
+                          </span>
+                          <button type="button" disabled={isFeaturedSlotsTableMissing} onClick={() => void handleSetSponsoredProduct(listing.id)} className={isSelected ? "btn-secondary" : "btn-primary"}>
+                            Sponsorlu ürün olarak seç
+                          </button>
+                        </div>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
             </div>
+          </div>
           </section>
 
-          <section id="reklam-alanları" className="market-card p-5">
+          <section id="reklam-alanlari" className={sectionClass("ads")}>
+          <div className="market-card p-5">
             <p className="tag-text text-brand-red">Monetizasyon</p>
             <h2 className="mt-2 text-2xl font-black text-brand-black">Reklam Alanları</h2>
             <p className="mt-3 text-sm font-bold text-neutral-600">Bu alan ileride Google Ads/AdSense veya sponsorlu kampanya ile yönetilecek.</p>
@@ -573,9 +666,11 @@ export function AdminDashboard() {
                 </article>
               ))}
             </div>
+          </div>
           </section>
 
-          <section id="raporlar" className="market-card p-5">
+          <section id="raporlar" className={sectionClass("reports")}>
+          <div className="market-card p-5">
             <p className="tag-text text-brand-red">Mock veri</p>
             <h2 className="mt-2 text-2xl font-black text-brand-black">Raporlar</h2>
             <p className="mt-3 text-sm font-bold text-neutral-600">Rapor sistemi henüz gerçek tabloya bağlı değil; aşağıdaki kayıtlar mock veridir.</p>
@@ -591,6 +686,7 @@ export function AdminDashboard() {
                 </div>
               ))}
             </div>
+          </div>
           </section>
         </main>
       </div>
