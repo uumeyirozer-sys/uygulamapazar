@@ -4,9 +4,10 @@ import { FavoriteButton } from "@/components/listings/favorite-button";
 import { ProductVisual } from "@/components/listings/product-visual";
 import { Container } from "@/components/ui/container";
 import { categories } from "@/data/categories";
+import { getHomepageProfileCards, getHomepageSponsoredProduct, type HomepageProfileCard } from "@/lib/homepage-management";
 import { getApprovedListingProducts } from "@/lib/listings";
 
-const profiles = [
+const fallbackProfiles = [
   { name: "Studio Alp", handle: "@studioalp", products: "38 ürün", initials: "SA", score: "98%", username: "studioalp" },
   { name: "GameForge", handle: "@gameforge", products: "24 ürün", initials: "GF", score: "96%", username: "gameforge" },
   { name: "KodLab", handle: "@kodlab", products: "51 ürün", initials: "KL", score: "99%", username: "kodlab" },
@@ -54,7 +55,12 @@ function getHomeCategoryTheme(category: (typeof categories)[number]) {
 }
 
 export default async function Home() {
-  const marketplaceProducts = await getApprovedListingProducts({ fallback: true, limit: 6 });
+  const [marketplaceProducts, managedProfiles, sponsoredProduct] = await Promise.all([
+    getApprovedListingProducts({ fallback: true, limit: 6 }),
+    getHomepageProfileCards(),
+    getHomepageSponsoredProduct()
+  ]);
+  const homepageProfiles: HomepageProfileCard[] = managedProfiles.length > 0 ? managedProfiles : (fallbackProfiles as HomepageProfileCard[]);
   const trendingProducts = marketplaceProducts.slice(0, 3);
   const newProducts = marketplaceProducts.slice(0, 6);
 
@@ -264,8 +270,9 @@ export default async function Home() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs font-black uppercase text-red-200">Sponsorlu</p>
-                <h2 className="mt-3 text-2xl font-black leading-8 text-brand-white">LaunchKit Pro</h2>
-                <p className="mt-3 text-sm leading-6 text-neutral-300">
+                <h2 className="mt-3 text-2xl font-black leading-8 text-brand-white">{sponsoredProduct.title}</h2>
+                <p className="mt-3 text-sm leading-6 text-neutral-300">{sponsoredProduct.shortDescription}</p>
+                <p className="hidden">
                   Ürün sayfası, ödeme akışı ve tanıtım bölümleri hazır premium SaaS başlangıç paketi.
                 </p>
               </div>
@@ -273,14 +280,10 @@ export default async function Home() {
                 Native
               </span>
             </div>
-            <div className="mt-8 aspect-[16/10] rounded-xl border border-white/10 bg-gradient-to-br from-brand-red via-neutral-900 to-neutral-700 p-4 shadow-[0_20px_55px_rgba(0,0,0,0.24)]">
-              <div className="h-5 w-24 rounded-full bg-white/80" />
-              <div className="mt-12 grid grid-cols-2 gap-2">
-                <div className="h-12 rounded-lg bg-white/20" />
-                <div className="h-12 rounded-lg bg-white/30" />
-              </div>
+            <div className="mt-8 overflow-hidden rounded-xl border border-white/10 shadow-[0_20px_55px_rgba(0,0,0,0.24)]">
+              <ProductVisual accent={sponsoredProduct.images[0]} title={sponsoredProduct.title} thumbnailUrl={sponsoredProduct.thumbnailUrl} variant="cover" />
             </div>
-            <Link href="/urun/taskflow-pro-saas" className="btn-primary mt-5 w-full shadow-[0_12px_28px_rgba(229,9,20,0.2)]">
+            <Link href={`/urun/${sponsoredProduct.slug}`} className="btn-primary mt-5 w-full shadow-[0_12px_28px_rgba(229,9,20,0.2)]">
               Sponsor ürünü gör
             </Link>
           </aside>
@@ -294,11 +297,16 @@ export default async function Home() {
             <h2 className="section-title mt-2">Popüler profiller</h2>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {profiles.map((profile) => (
+            {homepageProfiles.map((profile) => (
               <Link key={profile.handle} href={`/profil/${profile.username}`} className="market-card group block h-64 overflow-hidden p-5 text-center">
                 <div className="mx-auto mb-4 h-16 w-full rounded-xl bg-gradient-to-br from-neutral-950 via-neutral-800 to-brand-red opacity-95" />
                 <div className="mx-auto -mt-12 flex h-20 w-20 items-center justify-center rounded-full bg-neutral-950 text-xl font-black text-brand-white ring-4 ring-brand-white transition duration-200 group-hover:scale-[1.03]">
-                  {profile.initials}
+                  {"avatarUrl" in profile && profile.avatarUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={profile.avatarUrl} alt={profile.name} className="h-full w-full rounded-full object-cover" />
+                  ) : (
+                    profile.initials
+                  )}
                 </div>
                 <h3 className="mt-4 text-lg font-black leading-6 text-brand-black">{profile.name}</h3>
                 <p className="mt-1 text-sm font-bold text-neutral-500">{profile.handle}</p>

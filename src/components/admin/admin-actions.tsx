@@ -2,18 +2,19 @@
 
 import { useState } from "react";
 
-type AdminAction = "İncele" | "Onayla" | "Reddet";
+type AdminAction = "İncele" | "Onayla" | "Reddet" | "Yayından kaldır" | "Sil";
 
 type AdminActionsProps = {
   listingId: string;
   listingTitle: string;
+  onDelete: (listingId: string) => Promise<void>;
   onInspect: (listingId: string) => void;
   onStatusChange: (listingId: string, status: "approved" | "rejected") => Promise<void>;
 };
 
-const actions: AdminAction[] = ["İncele", "Onayla", "Reddet"];
+const actions: AdminAction[] = ["İncele", "Onayla", "Reddet", "Yayından kaldır", "Sil"];
 
-export function AdminActions({ listingId, listingTitle, onInspect, onStatusChange }: AdminActionsProps) {
+export function AdminActions({ listingId, listingTitle, onDelete, onInspect, onStatusChange }: AdminActionsProps) {
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -29,8 +30,13 @@ export function AdminActions({ listingId, listingTitle, onInspect, onStatusChang
     setIsLoading(true);
 
     try {
-      await onStatusChange(listingId, action === "Onayla" ? "approved" : "rejected");
-      setMessage(action === "Onayla" ? "İlan onaylandı." : "İlan reddedildi.");
+      if (action === "Sil") {
+        await onDelete(listingId);
+        setMessage("İlan silindi.");
+      } else {
+        await onStatusChange(listingId, action === "Onayla" ? "approved" : "rejected");
+        setMessage(action === "Onayla" ? "İlan onaylandı." : "İlan reddedildi / yayından kaldırıldı.");
+      }
     } catch {
       setMessage("İşlem tamamlanamadı. Lütfen tekrar deneyin.");
     } finally {
@@ -50,9 +56,11 @@ export function AdminActions({ listingId, listingTitle, onInspect, onStatusChang
             className={`rounded-full px-3 py-1.5 text-xs font-black transition disabled:cursor-not-allowed disabled:opacity-60 ${
               action === "Onayla"
                 ? "bg-red-50 text-brand-red hover:bg-red-100"
-                : action === "Reddet"
-                  ? "bg-neutral-950 text-brand-white hover:bg-neutral-800"
-                  : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200"
+                : action === "Sil"
+                  ? "bg-red-600 text-brand-white hover:bg-red-700"
+                  : action === "Reddet" || action === "Yayından kaldır"
+                    ? "bg-neutral-950 text-brand-white hover:bg-neutral-800"
+                    : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200"
             }`}
           >
             {action}

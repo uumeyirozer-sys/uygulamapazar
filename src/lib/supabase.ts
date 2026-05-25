@@ -149,6 +149,54 @@ export type Database = {
         };
         Relationships: [];
       };
+      homepage_profiles: {
+        Row: {
+          id: string;
+          profile_id: string;
+          sort_order: number | null;
+          is_active: boolean | null;
+          created_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          profile_id: string;
+          sort_order?: number | null;
+          is_active?: boolean | null;
+          created_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          profile_id?: string;
+          sort_order?: number | null;
+          is_active?: boolean | null;
+          created_at?: string | null;
+        };
+        Relationships: [];
+      };
+      featured_slots: {
+        Row: {
+          id: string;
+          slot_key: string;
+          listing_id: string | null;
+          is_active: boolean | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          slot_key: string;
+          listing_id?: string | null;
+          is_active?: boolean | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          slot_key?: string;
+          listing_id?: string | null;
+          is_active?: boolean | null;
+          updated_at?: string | null;
+        };
+        Relationships: [];
+      };
       notifications: {
         Row: {
           id: string;
