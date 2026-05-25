@@ -7,10 +7,13 @@ type AdminAction = "İncele" | "Onayla" | "Reddet";
 type AdminActionsProps = {
   listingId: string;
   listingTitle: string;
+  onInspect: (listingId: string) => void;
   onStatusChange: (listingId: string, status: "approved" | "rejected") => Promise<void>;
 };
 
-export function AdminActions({ listingId, listingTitle, onStatusChange }: AdminActionsProps) {
+const actions: AdminAction[] = ["İncele", "Onayla", "Reddet"];
+
+export function AdminActions({ listingId, listingTitle, onInspect, onStatusChange }: AdminActionsProps) {
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -18,7 +21,8 @@ export function AdminActions({ listingId, listingTitle, onStatusChange }: AdminA
     setMessage("");
 
     if (action === "İncele") {
-      setMessage(`${listingTitle} ilanı inceleme listesinde.`);
+      onInspect(listingId);
+      setMessage(`${listingTitle} ilanı açıldı.`);
       return;
     }
 
@@ -37,7 +41,7 @@ export function AdminActions({ listingId, listingTitle, onStatusChange }: AdminA
   return (
     <div className="grid gap-2">
       <div className="flex flex-wrap gap-2">
-        {(["İncele", "Onayla", "Reddet"] as AdminAction[]).map((action) => (
+        {actions.map((action) => (
           <button
             key={action}
             type="button"

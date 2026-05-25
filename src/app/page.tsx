@@ -241,10 +241,8 @@ export default async function Home() {
                 <article key={product.id} className="market-card relative min-h-36 overflow-hidden">
                   <FavoriteButton listingId={product.id} />
                   <Link href={`/urun/${product.slug}`} className="grid min-h-36 grid-cols-[96px_1fr]">
-                    <div className="bg-[#141416] p-3">
-                      <div className="flex h-full items-end rounded-xl bg-gradient-to-br from-brand-red to-neutral-800 p-2 shadow-inner">
-                        <span className="h-2 w-10 rounded-full bg-white/70" />
-                      </div>
+                    <div className="overflow-hidden bg-[#141416]">
+                      <ProductVisual accent={product.images[0]} title={product.title} thumbnailUrl={product.thumbnailUrl} compact variant="cover" />
                     </div>
                     <div className="min-w-0 flex flex-col justify-between p-4">
                       <div className="min-w-0">

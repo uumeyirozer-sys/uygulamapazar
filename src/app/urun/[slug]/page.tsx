@@ -8,6 +8,7 @@ import { Container } from "@/components/ui/container";
 import { getApprovedListingProductBySlug, getRelatedApprovedListingProducts } from "@/lib/listings";
 import { siteName, siteUrl } from "@/lib/seo";
 import { slugifyTr } from "@/lib/slugify-tr";
+import { getYoutubeEmbedUrl } from "@/lib/youtube";
 
 type ProductPageProps = {
   params: Promise<{
@@ -48,6 +49,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   }
 
   const relatedProducts = await getRelatedApprovedListingProducts(product);
+  const youtubeEmbedUrl = getYoutubeEmbedUrl(product.youtubeUrl);
 
   return (
     <>
@@ -214,15 +216,19 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
               <article id="medya" className="market-card overflow-hidden p-6">
                 <h2 className="text-2xl font-black text-brand-black">Medya</h2>
-                {product.youtubeUrl ? (
+                {product.youtubeUrl && youtubeEmbedUrl ? (
                   <div className="mt-5 overflow-hidden rounded-2xl bg-neutral-950">
                     <iframe
                       className="aspect-video w-full"
-                      src={product.youtubeUrl}
+                      src={youtubeEmbedUrl}
                       title={`${product.title} ürün videosu`}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       allowFullScreen
                     />
+                  </div>
+                ) : product.youtubeUrl ? (
+                  <div className="mt-5 rounded-2xl bg-red-50 p-5 text-sm font-bold text-brand-red ring-1 ring-red-100">
+                    Video bağlantısı geçersiz.
                   </div>
                 ) : (
                   <div className="mt-5 rounded-2xl bg-neutral-50 p-5 text-sm font-bold text-neutral-600 ring-1 ring-neutral-100">

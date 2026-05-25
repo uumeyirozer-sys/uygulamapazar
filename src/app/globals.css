@@ -43,6 +43,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+body,
+button,
+input,
+textarea,
+select {
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+}
+
 a {
   color: inherit;
   text-decoration: none;
