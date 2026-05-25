@@ -14,6 +14,12 @@ type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 type HomepageProfile = Database["public"]["Tables"]["homepage_profiles"]["Row"];
 type FeaturedSlot = Database["public"]["Tables"]["featured_slots"]["Row"];
 type ListingStatus = Listing["status"];
+type SupabaseErrorLike = {
+  code?: string;
+  message?: string;
+  details?: string;
+  hint?: string;
+};
 type SectionKey = "summary" | "listings" | "users" | "homepageProfiles" | "sponsoredProduct" | "ads" | "reports";
 
 const sections: Array<{ key: SectionKey; label: string }> = [
@@ -44,6 +50,33 @@ const reports = [
   { type: "sahte ilan", target: "Crypto Wallet Clone", reporter: "studioalp", date: "2026-05-07" },
   { type: "uygunsuz içerik", target: "Unknown Script Pack", reporter: "kodlab", date: "2026-05-06" }
 ];
+
+function logSupabaseError(label: string, error: SupabaseErrorLike) {
+  console.error(label, {
+    code: error.code,
+    message: error.message,
+    details: error.details,
+    hint: error.hint
+  });
+}
+
+function getWriteErrorMessage(error: SupabaseErrorLike) {
+  const message = `${error.message ?? ""} ${error.details ?? ""} ${error.hint ?? ""}`.toLowerCase();
+
+  if (error.code === "42501" || message.includes("row-level security") || message.includes("permission denied")) {
+    return "RLS izni engelledi.";
+  }
+
+  if (error.code === "42P01" || message.includes("does not exist")) {
+    return "Gerekli tablo bulunamadı. Supabase SQL migration çalıştırılmalı.";
+  }
+
+  if (error.code === "23505") {
+    return "Kayıt zaten mevcut. Lütfen tekrar deneyin.";
+  }
+
+  return "Kayıt yazılamadı.";
+}
 
 function formatPrice(listing: Listing) {
   if (listing.is_free) {
@@ -186,6 +219,7 @@ export function AdminDashboard() {
   const homepageProfileIds = useMemo(() => new Set(homepageProfiles.filter((slot) => slot.is_active !== false).map((slot) => slot.profile_id)), [homepageProfiles]);
   const sponsoredListing = useMemo(() => listings.find((listing) => listing.id === featuredSlot?.listing_id) ?? null, [featuredSlot, listings]);
   const sectionClass = (sectionKey: SectionKey) => (activeSection === sectionKey ? "grid gap-6" : "hidden");
+  const activeHomepageProfiles = useMemo(() => homepageProfiles.filter((slot) => slot.is_active !== false), [homepageProfiles]);
 
   const stats = [
     { label: "Toplam ilan", value: String(listings.length) },
@@ -257,13 +291,13 @@ export function AdminDashboard() {
     }
 
     if (homepageProfilesResult.error) {
-      console.error("Homepage profile yönetimi yüklenemedi:", homepageProfilesResult.error);
+      logSupabaseError("Homepage profile yönetimi yüklenemedi:", homepageProfilesResult.error);
       setIsHomepageProfilesTableMissing(true);
       setManagementMessage("Gerekli tablo bulunamadı. Supabase SQL migration çalıştırılmalı.");
     }
 
     if (featuredSlotResult.error) {
-      console.error("Sponsorlu ürün slotu yüklenemedi:", featuredSlotResult.error);
+      logSupabaseError("Sponsorlu ürün slotu yüklenemedi:", featuredSlotResult.error);
       setIsFeaturedSlotsTableMissing(true);
       setManagementMessage("Gerekli tablo bulunamadı. Supabase SQL migration çalıştırılmalı.");
     }
@@ -274,6 +308,73 @@ export function AdminDashboard() {
     setFeaturedSlot(featuredSlotResult.data ?? null);
     setIsAdmin(true);
     setIsLoading(false);
+  }, []);
+
+  const ensureAdminSession = useCallback(async () => {
+    const supabase = getSupabaseClient();
+    const {
+      data: { user },
+      error: userError
+    } = await supabase.auth.getUser();
+
+    if (userError) {
+      logSupabaseError("Admin aksiyonunda oturum kontrolü başarısız:", userError);
+      setManagementMessage("Oturum bulunamadı.");
+      return null;
+    }
+
+    if (!user) {
+      setManagementMessage("Oturum bulunamadı.");
+      return null;
+    }
+
+    const { data: profile, error: profileError } = await supabase.from("profiles").select("is_admin").eq("id", user.id).maybeSingle();
+
+    if (profileError) {
+      logSupabaseError("Admin aksiyonunda yetki kontrolü başarısız:", profileError);
+      setManagementMessage(getWriteErrorMessage(profileError));
+      return null;
+    }
+
+    if (!profile?.is_admin) {
+      setManagementMessage("Admin yetkisi bulunamadı.");
+      return null;
+    }
+
+    return supabase;
+  }, []);
+
+  const refetchHomepageManagement = useCallback(async () => {
+    const supabase = getSupabaseClient();
+    const [homepageProfilesResult, featuredSlotResult] = await Promise.all([
+      supabase.from("homepage_profiles").select("*").order("sort_order", { ascending: true }),
+      supabase.from("featured_slots").select("*").eq("slot_key", "homepage_sponsored_product").maybeSingle()
+    ]);
+
+    if (homepageProfilesResult.error) {
+      logSupabaseError("Homepage profile refetch başarısız:", homepageProfilesResult.error);
+      setIsHomepageProfilesTableMissing(true);
+      setManagementMessage(getWriteErrorMessage(homepageProfilesResult.error));
+    } else {
+      setIsHomepageProfilesTableMissing(false);
+      setHomepageProfiles(homepageProfilesResult.data ?? []);
+    }
+
+    if (featuredSlotResult.error) {
+      logSupabaseError("Sponsorlu ürün refetch başarısız:", featuredSlotResult.error);
+      setIsFeaturedSlotsTableMissing(true);
+      setManagementMessage(getWriteErrorMessage(featuredSlotResult.error));
+    } else {
+      setIsFeaturedSlotsTableMissing(false);
+      setFeaturedSlot(featuredSlotResult.data ?? null);
+    }
+
+    return {
+      homepageProfiles: homepageProfilesResult.data ?? [],
+      featuredSlot: featuredSlotResult.data ?? null,
+      homepageProfilesError: homepageProfilesResult.error,
+      featuredSlotError: featuredSlotResult.error
+    };
   }, []);
 
   useEffect(() => {
@@ -348,7 +449,12 @@ export function AdminDashboard() {
       return;
     }
 
-    const supabase = getSupabaseClient();
+    const supabase = await ensureAdminSession();
+
+    if (!supabase) {
+      return;
+    }
+
     const existingSlot = homepageProfiles.find((slot) => slot.profile_id === profile.id);
 
     if (existingSlot) {
@@ -361,8 +467,8 @@ export function AdminDashboard() {
         .maybeSingle();
 
       if (error) {
-        console.error("Popüler profil güncellenemedi:", error);
-        setManagementMessage(`Popüler profil güncellenemedi: ${error.message}`);
+        logSupabaseError("Popüler profil güncellenemedi:", error);
+        setManagementMessage(getWriteErrorMessage(error));
         return;
       }
 
@@ -383,8 +489,8 @@ export function AdminDashboard() {
         .maybeSingle();
 
       if (error) {
-        console.error("Popüler profile eklenemedi:", error);
-        setManagementMessage(`Popüler profile eklenemedi: ${error.message}`);
+        logSupabaseError("Popüler profile eklenemedi:", error);
+        setManagementMessage(getWriteErrorMessage(error));
         return;
       }
 
@@ -395,8 +501,21 @@ export function AdminDashboard() {
       }
     }
 
-    setManagementMessage("Popüler profiller güncellendi.");
-    await loadAdminData();
+    const refetchResult = await refetchHomepageManagement();
+    const verifiedSlot = refetchResult.homepageProfiles.find((slot) => slot.profile_id === profile.id);
+
+    if (refetchResult.homepageProfilesError) {
+      setManagementMessage(getWriteErrorMessage(refetchResult.homepageProfilesError));
+      return;
+    }
+
+    if (!verifiedSlot) {
+      console.error("Popüler profil işlemi sonrası refetch içinde kayıt bulunamadı.", { profileId: profile.id, refetchResult });
+      setManagementMessage("Kayıt yazılamadı.");
+      return;
+    }
+
+    setManagementMessage(verifiedSlot.is_active !== false ? "Popüler profil aktif edildi." : "Popüler profil pasif edildi.");
   }
 
   async function handleSetSponsoredProduct(listingId: string) {
@@ -406,7 +525,12 @@ export function AdminDashboard() {
       return;
     }
 
-    const supabase = getSupabaseClient();
+    const supabase = await ensureAdminSession();
+
+    if (!supabase) {
+      return;
+    }
+
     const payload = {
       slot_key: "homepage_sponsored_product",
       listing_id: listingId || null,
@@ -421,8 +545,8 @@ export function AdminDashboard() {
       .maybeSingle();
 
     if (error) {
-      console.error("Sponsorlu ürün güncellenemedi:", error);
-      setManagementMessage(`Sponsorlu ürün güncellenemedi: ${error.message}`);
+      logSupabaseError("Sponsorlu ürün güncellenemedi:", error);
+      setManagementMessage(getWriteErrorMessage(error));
       return;
     }
 
@@ -437,8 +561,25 @@ export function AdminDashboard() {
       return;
     }
 
+    const refetchResult = await refetchHomepageManagement();
+
+    if (refetchResult.featuredSlotError) {
+      setManagementMessage(getWriteErrorMessage(refetchResult.featuredSlotError));
+      return;
+    }
+
+    if (
+      !refetchResult.featuredSlot ||
+      refetchResult.featuredSlot.slot_key !== "homepage_sponsored_product" ||
+      refetchResult.featuredSlot.listing_id !== payload.listing_id ||
+      refetchResult.featuredSlot.is_active !== payload.is_active
+    ) {
+      console.error("Sponsorlu ürün refetch doğrulamasından geçmedi.", { refetchResult, payload });
+      setManagementMessage("Kayıt yazılamadı.");
+      return;
+    }
+
     setManagementMessage("Sponsorlu ürün güncellendi.");
-    await loadAdminData();
   }
 
   if (isLoading) {
@@ -468,6 +609,15 @@ export function AdminDashboard() {
         <p className="text-sm font-bold leading-6 text-brand-red">Bu ekran yalnızca admin kullanıcılar içindir. İşlemler Supabase Auth ve profiles.is_admin kontrolü ile yapılır.</p>
         {actionMessage ? <p className="mt-2 text-sm font-black text-brand-red">{actionMessage}</p> : null}
         {managementMessage ? <p className="mt-2 text-sm font-black text-neutral-700">{managementMessage}</p> : null}
+      </div>
+
+      <div className="market-card mb-6 p-4">
+        <p className="tag-text text-brand-red">Vitrin debug</p>
+        <div className="mt-3 grid gap-3 text-sm font-bold text-neutral-700 sm:grid-cols-3">
+          <p>Aktif homepage_profiles: {activeHomepageProfiles.length}</p>
+          <p>Sponsored slot: {featuredSlot?.listing_id ? "Var" : "Yok"}</p>
+          <p>Son işlem: {managementMessage || actionMessage || "Bekleniyor"}</p>
+        </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[260px_1fr] lg:items-start">
