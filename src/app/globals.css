@@ -30,6 +30,7 @@ html {
   min-height: 100%;
   scroll-behavior: smooth;
   text-size-adjust: 100%;
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
 }
 
 body {
@@ -44,6 +45,7 @@ body {
 }
 
 body,
+html,
 button,
 input,
 textarea,
